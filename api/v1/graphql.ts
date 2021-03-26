@@ -5,6 +5,42 @@ import { ApolloServer, gql } from 'apollo-server-micro'
 
 const ROOT = process.cwd()
 
+interface Snippet {
+  slug: string
+  short_description: string
+  types: string[]
+  mdSource: string
+}
+
+const fileToSnippet = (slug: string, contents: string | Buffer): Snippet => {
+  const { data, content } = matter(contents)
+  return {
+    ...data,
+    slug,
+    mdSource: content.trim(),
+  } as Snippet
+}
+
+const getAllSnippets = async (): Promise<Snippet[]> => {
+  const snippetFiles = await fs.readdir(path.join(ROOT, '_data'))
+  return Promise.all(
+    snippetFiles.map(async file => {
+      const slug = file.replace(/\.mdx?$/, '')
+      const fileContent = await fs.readFile(path.join(ROOT, '_data', file))
+      return fileToSnippet(slug, fileContent)
+    })
+  )
+}
+
+const getSnippet = async (slug: string): Promise<Snippet> => {
+  try {
+    const file = await fs.readFile(path.join(ROOT, '_data', slug + '.md'))
+    return fileToSnippet(slug, file)
+  } catch (err) {
+    throw new Error('Snippet not found')
+  }
+}
+
 const typeDefs = gql`
   type Snippet {
     slug: ID!
@@ -15,26 +51,18 @@ const typeDefs = gql`
 
   type Query {
     snippets: [Snippet]!
+    snippet(slug: ID!): Snippet
   }
 `
 
 const resolvers = {
   Query: {
     snippets: async () => {
-      const snippetFiles = await fs.readdir(path.join(ROOT, '_data'))
-      const data = await Promise.all(
-        snippetFiles.map(async file => {
-          const slug = file.replace(/\.mdx?$/, '')
-          const fileContent = await fs.readFile(path.join(ROOT, '_data', file))
-          const { data, content } = matter(fileContent)
-          return {
-            ...data,
-            slug,
-            mdSource: content.trim(),
-          }
-        })
-      )
+      const data = await getAllSnippets()
       return data
+    },
+    snippet: async (_: any, { slug }: { slug: string }) => {
+      return await getSnippet(slug)
     },
   },
 }
