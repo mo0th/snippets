@@ -21,6 +21,30 @@ console.log('Hello, World!')
 console.log('Hello, World!')
 ```
 
+```jsx
+import { render } from 'react-dom'
+
+const App = () => <div>Hello, World!</div>
+
+render(<App />, document.getElementById('root'))
+```
+
+```tsx
+import { render } from 'react-dom'
+
+const App: React.FC = () => <div>Hello, World!</div>
+
+render(<App />, document.getElementById('root'))
+```
+
+```bash
+echo 'Hello, World!'
+```
+
+```perl
+print 'Hello, World!'
+```
+
 ```python
 print('Hello, World!')
 ```
