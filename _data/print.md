@@ -1,5 +1,6 @@
 ---
-short_description: Print text and other things to a console
+title: Hello World
+short_description: Show Hello World
 types:
   - javascript
   - typescript

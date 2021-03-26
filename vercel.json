@@ -4,5 +4,16 @@
       "source": "/graphql",
       "destination": "/api/v1/graphql"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
   ]
 }
