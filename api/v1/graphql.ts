@@ -2,7 +2,6 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import { ApolloServer, gql } from 'apollo-server-micro'
-import microCors from 'micro-cors'
 
 const ROOT = process.cwd()
 
