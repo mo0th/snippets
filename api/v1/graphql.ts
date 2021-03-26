@@ -7,6 +7,7 @@ const ROOT = process.cwd()
 
 interface Snippet {
   slug: string
+  title: string
   short_description: string
   types: string[]
   mdSource: string
@@ -44,6 +45,7 @@ const getSnippet = async (slug: string): Promise<Snippet> => {
 const typeDefs = gql`
   type Snippet {
     slug: ID!
+    title: String!
     short_description: String!
     types: [String]!
     mdSource: String!
